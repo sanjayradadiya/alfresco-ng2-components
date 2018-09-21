@@ -29,7 +29,11 @@ import {
     Output
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProcessInstanceFilterRepresentation, Pagination, UserProcessInstanceFilterRepresentation } from 'alfresco-js-api';
+import {
+    ProcessInstanceFilterRepresentation,
+    Pagination,
+    UserProcessInstanceFilterRepresentation
+} from 'alfresco-js-api';
 import {
     FORM_FIELD_VALIDATORS, FormEvent, FormFieldEvent, FormRenderingService, FormService,
     DynamicTableRow, ValidateDynamicTableRowEvent, AppConfigService, PaginationComponent, UserPreferenceValues
@@ -53,7 +57,7 @@ import {
     TaskListComponent
 } from '@alfresco/adf-process-services';
 import { LogService } from '@alfresco/adf-core';
-import { AlfrescoApiService, UserPreferencesService } from '@alfresco/adf-core';
+import { AlfrescoApiService, UserPreferencesService, ValidateFormEvent } from '@alfresco/adf-core';
 import { Subscription } from 'rxjs';
 import { /*CustomEditorComponent*/ CustomStencil01 } from './custom-editor/custom-editor.component';
 import { DemoFieldValidator } from './demo-field-validator';
@@ -126,6 +130,7 @@ export class ProcessServiceComponent implements AfterViewInit, OnDestroy, OnInit
     processPage = 0;
     paginationPageSize = 0;
     processSchemaColumns: any[] = [];
+    showHeaderContent = true;
 
     defaultProcessDefinitionName: string;
     defaultProcessName: string;
@@ -142,6 +147,9 @@ export class ProcessServiceComponent implements AfterViewInit, OnDestroy, OnInit
 
     showTaskTab: boolean;
     showProcessTab: boolean;
+
+    showProcessFilterIcon: boolean;
+    showTaskFilterIcon: boolean;
 
     fieldValidators = [
         ...FORM_FIELD_VALIDATORS,
@@ -200,6 +208,10 @@ export class ProcessServiceComponent implements AfterViewInit, OnDestroy, OnInit
 
             formService.formContentClicked.subscribe(content => {
                 this.showContentPreview(content);
+            }),
+
+            formService.validateForm.subscribe((validateFormEvent: ValidateFormEvent) => {
+                this.logService.log('Error form:' + validateFormEvent.errorsField);
             })
         );
 
@@ -249,13 +261,17 @@ export class ProcessServiceComponent implements AfterViewInit, OnDestroy, OnInit
         this.taskPage = 0;
     }
 
+    toggleHeaderContent(): void {
+        this.showHeaderContent = !this.showHeaderContent;
+    }
+
     onTabChange(event: any): void {
         const index = event.index;
         if (index === TASK_ROUTE) {
             this.showTaskTab = event.index === this.tabs.tasks;
             this.relocateLocationToTask();
         } else if (index === PROCESS_ROUTE) {
-            this.showProcessTab =  event.index === this.tabs.processes;
+            this.showProcessTab = event.index === this.tabs.processes;
             this.relocateLocationToProcess();
         } else if (index === REPORT_ROUTE) {
             this.relocateLocationToReport();
@@ -298,7 +314,7 @@ export class ProcessServiceComponent implements AfterViewInit, OnDestroy, OnInit
         this.currentTaskId = this.taskList.getCurrentId();
     }
 
-    onProcessFilterClick(event: UserProcessInstanceFilterRepresentation): void {
+    onProcessFilterChange(event: UserProcessInstanceFilterRepresentation): void {
         this.processFilter = event;
         this.resetProcessPaginationPage();
         this.relocateLocationToProcess();
@@ -492,4 +508,10 @@ export class ProcessServiceComponent implements AfterViewInit, OnDestroy, OnInit
         this.currentTaskId = null;
     }
 
+    changeTaskFilterIcon() {
+        this.showTaskFilterIcon = !this.showTaskFilterIcon;
+    }
+    changeProcessFilterIcon() {
+        this.showProcessFilterIcon = !this.showProcessFilterIcon;
+    }
 }

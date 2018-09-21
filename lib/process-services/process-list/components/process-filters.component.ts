@@ -21,6 +21,7 @@ import { ProcessInstanceFilterRepresentation, UserProcessInstanceFilterRepresent
 import { Observable } from 'rxjs';
 import { FilterProcessRepresentationModel } from '../models/filter-process.model';
 import { ProcessFilterService } from './../services/process-filter.service';
+import { IconModel } from '../../app-list/icon.model';
 
 @Component({
     selector: 'adf-process-instance-filters',
@@ -37,7 +38,7 @@ export class ProcessFiltersComponent implements OnInit, OnChanges {
 
     /** Emitted when the user selects a filter from the list. */
     @Output()
-    filterClick: EventEmitter<ProcessInstanceFilterRepresentation> = new EventEmitter<ProcessInstanceFilterRepresentation>();
+    filterClick: EventEmitter<UserProcessInstanceFilterRepresentation> = new EventEmitter<UserProcessInstanceFilterRepresentation>();
 
     /** Emitted when the list of filters has been successfully loaded from the server. */
     @Output()
@@ -59,17 +60,25 @@ export class ProcessFiltersComponent implements OnInit, OnChanges {
     @Input()
     showIcon: boolean = true;
 
+    /** Emitted when a process filter is selected. */
+    @Output()
+    filterSelected: EventEmitter<ProcessInstanceFilterRepresentation> = new EventEmitter<ProcessInstanceFilterRepresentation>();
+
     filter$: Observable<ProcessInstanceFilterRepresentation>;
 
     currentFilter: ProcessInstanceFilterRepresentation;
 
     filters: UserProcessInstanceFilterRepresentation [] = [];
 
+    private iconsMDL: IconModel;
+
     constructor(private processFilterService: ProcessFilterService,
                 private appsProcessService: AppsProcessService) {
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.iconsMDL = new IconModel();
+    }
 
     ngOnChanges(changes: SimpleChanges) {
         const appId = changes['appId'];
@@ -151,6 +160,7 @@ export class ProcessFiltersComponent implements OnInit, OnChanges {
                     filterParam.id === processFilter.id ||
                     filterParam.index === index) {
                     this.currentFilter = processFilter;
+                    this.filterSelected.emit(processFilter);
                 }
             });
         }
@@ -172,6 +182,7 @@ export class ProcessFiltersComponent implements OnInit, OnChanges {
     public selectDefaultTaskFilter() {
         if (!this.isFilterListEmpty()) {
             this.currentFilter = this.filters[0];
+            this.filterSelected.emit(this.filters[0]);
         }
     }
 
@@ -199,5 +210,12 @@ export class ProcessFiltersComponent implements OnInit, OnChanges {
 
     private isCurrentFilterEmpty(): boolean {
         return this.currentFilter === undefined || null;
+    }
+
+    /**
+     * Return current filter icon
+     */
+    getFilterIcon(icon): string {
+        return this.iconsMDL.mapGlyphiconToMaterialDesignIcons(icon);
     }
 }

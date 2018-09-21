@@ -1,7 +1,7 @@
 ---
 Added: v2.3.0
 Status: Active
-Last reviewed: 2018-05-03
+Last reviewed: 2018-09-13
 ---
 
 # Permission List Component
@@ -17,8 +17,10 @@ Shows node permissions as a table.
 </adf-permission-list>
 ```
 
-If permissions list is empty, `No permissions` text is displayed, 
-or custom template can be added: 
+### [Transclusions](../user-guide/transclusion.md)
+
+When the list is empty, the contents will simply say "No permissions" by default, 
+but you can also supply your own content: 
 
 ```html
 <adf-permission-list [nodeId]="nodeId">
@@ -40,7 +42,7 @@ or custom template can be added:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| error | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<any>` |  |
+| error | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<any>` | Emitted when an error occurs. |
 | update | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<PermissionElement>` | Emitted when the permission is updated. |
 
 ## Details

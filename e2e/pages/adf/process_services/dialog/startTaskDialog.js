@@ -20,12 +20,13 @@ var Util = require('../../../../util/util');
 var StartTaskDialog = function () {
 
     var name = element(by.css("input[id='name_id']"));
+    var dueDate = element(by.css("input[id='date_id']"));
     var description = element(by.css("textarea[id='description_id']"));
     var assignee = element(by.css("div#people-widget-content input"));
     var formDropDown = element(by.css("mat-select[id='form_id']"));
     var startButton = element(by.css("button[id='button-start']"));
     var startButtonEnabled = element(by.css("button[id='button-start']:not(disabled)"));
-    var cancelButton = element(by.css("button[id='button-cancle']"));
+    var cancelButton = element(by.css("button[id='button-cancel']"));
     var removeAssigneeIcon = element(by.css("button[data-automation-id='adf-people-selector-deselect']"));
 
     this.addName = function (userName) {
@@ -37,6 +38,12 @@ var StartTaskDialog = function () {
     this.addDescription = function (userDescription) {
         Util.waitUntilElementIsVisible(description);
         description.sendKeys(userDescription);
+        return this;
+    };
+
+    this.addDueDate = function (date) {
+        Util.waitUntilElementIsVisible(dueDate);
+        dueDate.sendKeys(date);
         return this;
     };
 

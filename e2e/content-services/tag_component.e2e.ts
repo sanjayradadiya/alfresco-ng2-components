@@ -28,6 +28,7 @@ import AlfrescoApi = require('alfresco-js-api-node');
 import { UploadActions } from '../actions/ACS/upload.actions';
 
 import Util = require('../util/util');
+import { browser } from 'protractor';
 
 describe('Tag component', () => {
 
@@ -38,7 +39,11 @@ describe('Tag component', () => {
     let pdfFileModel = new FileModel({ 'name': resources.Files.ADF_DOCUMENTS.PDF.file_name });
     let deleteFile = new FileModel({ 'name': Util.generateRandomString() });
     let sameTag = Util.generateRandomStringToLowerCase();
-    let tagList = [Util.generateRandomStringToLowerCase(), Util.generateRandomStringToLowerCase()];
+    let tagList = [
+        Util.generateRandomStringToLowerCase(),
+        Util.generateRandomStringToLowerCase(),
+        Util.generateRandomStringToLowerCase(),
+        Util.generateRandomStringToLowerCase()];
     let uppercaseTag = Util.generateRandomStringToUpperCase();
     let digitsTag = Util.generateRandomStringDigits();
     let nonLatinTag = Util.generateRandomStringNonLatin();
@@ -100,6 +105,10 @@ describe('Tag component', () => {
 
     it('[C260378] Multiple tags', () => {
         tagPage.insertNodeId(pdfFileModel.id);
+        tagPage.addTag(tagList[2]);
+
+        browser.driver.sleep(3000); // wait CS return tags
+
         tagPage.checkTagListIsOrderedAscending();
         tagPage.checkTagListByNodeIdIsOrderedAscending();
         tagPage.checkTagListContentServicesIsOrderedAscending();
@@ -154,5 +163,17 @@ describe('Tag component', () => {
 
         tagPage.checkTagIsNotDisplayedInTagList(deleteTag.toLowerCase());
         tagPage.checkTagIsNotDisplayedInTagListByNodeId(deleteTag.toLowerCase());
+    });
+
+    it('[C286290] Should be able to hide the delete option from a tag component', () => {
+        tagPage.insertNodeId(pdfFileModel.id);
+        tagPage.addTag(tagList[3]);
+
+        tagPage.checkTagIsDisplayedInTagListByNodeId(tagList[3]);
+        tagPage.checkDeleteTagFromTagListByNodeIdIsDisplayed(tagList[3]);
+
+        tagPage.clickShowDeleteButtonSwitch();
+
+        tagPage.checkDeleteTagFromTagListByNodeIdIsNotDisplayed(tagList[3]);
     });
 });

@@ -1,12 +1,23 @@
 ---
 Added: v2.0.0
 Status: Active
-Last reviewed: 2018-08-07
+Last reviewed: 2018-09-13
 ---
 
 # Upload Drag Area Component
 
 Adds a drag and drop area to upload files to ACS.
+
+## Contents
+
+-   [Basic Usage](#basic-usage)
+    -   [Transclusions](#transclusions)
+-   [Class members](#class-members)
+    -   [Properties](#properties)
+    -   [Events](#events)
+-   [Details](#details)
+    -   [Intercepting uploads](#intercepting-uploads)
+    -   [Example](#example)
 
 ## Basic Usage
 
@@ -29,6 +40,19 @@ export class AppComponent {
 }
 ```
 
+### [Transclusions](../user-guide/transclusion.md)
+
+You can supply any content in the `<adf-upload-drag-area>` to display
+as the drag/drop target:
+
+```html
+<adf-upload-drag-area (success)="onSuccess($event)">
+    <div style="width: 200px; height: 100px; border: 1px solid #888888">
+        DRAG HERE
+    </div>
+</adf-upload-drag-area>
+```
+
 ## Class members
 
 ### Properties
@@ -48,7 +72,7 @@ export class AppComponent {
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| beginUpload | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<`[`UploadFilesEvent`](../../lib/content-services/upload/components/upload-files.event.ts)`>` | Raised after files or folders dropped and before the upload process starts. |
+| beginUpload | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<`[`UploadFilesEvent`](../../lib/content-services/upload/components/upload-files.event.ts)`>` | Emitted when the upload begins. |
 | createFolder | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<Object>` | Emitted when a folder is created. |
 | error | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<Object>` | Emitted when an error occurs. |
 | success | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<Object>` | Emitted when the file is uploaded successfully. |

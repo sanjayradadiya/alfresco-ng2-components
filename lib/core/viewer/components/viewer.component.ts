@@ -30,6 +30,7 @@ import { ViewerOpenWithComponent } from './viewer-open-with.component';
 import { ViewerSidebarComponent } from './viewer-sidebar.component';
 import { ViewerToolbarComponent } from './viewer-toolbar.component';
 import { Subscription } from 'rxjs';
+import { ViewUtilService } from '../services/view-util.service';
 
 @Component({
     selector: 'adf-viewer',
@@ -113,6 +114,7 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
     @Input()
     allowPrint = false;
 
+    /**  @deprecated 2.5.0 inkect the share button directive as custom button */
     /** Toggles sharing. */
     @Input()
     allowShare = false;
@@ -143,17 +145,28 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
     @Input()
     allowThumbnails = true;
 
+    /** @deprecated 2.5.0 will be renamed showRightSidebar in 3.0.0  */
     /** Toggles sidebar visibility. Requires `allowSidebar` to be set to `true`. */
     @Input()
     showSidebar = false;
 
+    /** Toggles left sidebar visibility. Requires `allowSidebar` to be set to `true`. */
+    @Input()
+    showLeftSidebar = false;
+
+    /** @deprecated 2.5.0 use sidebarTemplateLeft */
     /** The position of the sidebar. Can be `left` or `right`. */
     @Input()
     sidebarPosition = 'right';
 
+    /**  @deprecated 2.5.0 rename sidebarRight */
     /** The template for the sidebar. The template context contains the loaded node data. */
     @Input()
     sidebarTemplate: TemplateRef<any> = null;
+
+    /** The template for the left sidebar. The template context contains the loaded node data. */
+    @Input()
+    sidebarLeftTemplate: TemplateRef<any> = null;
 
     /** The template for the pdf thumbnails. */
     @Input()
@@ -209,6 +222,10 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
     @Output()
     navigateNext = new EventEmitter();
 
+    /** Emitted when the shared link used is not valid. */
+    @Output()
+    invalidSharedLink = new EventEmitter();
+
     viewerType = 'unknown';
     isLoading = false;
     node: MinimalNodeEntryEntity;
@@ -219,6 +236,7 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
     otherMenu: any;
     extension: string;
     sidebarTemplateContext: { node: MinimalNodeEntryEntity } = { node: null };
+    sidebarLeftTemplateContext: { node: MinimalNodeEntryEntity } = { node: null };
     fileTitle: string;
 
     private cacheBusterNumber;
@@ -229,7 +247,7 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
     private extensions = {
         image: ['png', 'jpg', 'jpeg', 'gif', 'bpm', 'svg'],
         media: ['wav', 'mp4', 'mp3', 'webm', 'ogg'],
-        text: ['txt', 'xml', 'js', 'html', 'json', 'ts'],
+        text: ['txt', 'xml', 'js', 'html', 'json', 'ts', 'css', 'md'],
         pdf: ['pdf']
     };
 
@@ -242,6 +260,7 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
     };
 
     constructor(private apiService: AlfrescoApiService,
+                private viewUtils: ViewUtilService,
                 private logService: LogService,
                 private location: Location,
                 private el: ElementRef) {
@@ -307,6 +326,7 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
                     () => {
                         this.isLoading = false;
                         this.logService.error('This sharedLink does not exist');
+                        this.invalidSharedLink.next();
                     });
             }
         }
@@ -370,6 +390,7 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
 
         this.extensionChange.emit(this.extension);
         this.sidebarTemplateContext.node = data;
+        this.sidebarLeftTemplateContext.node = data;
         this.scrollTop();
 
         return setupNode;
@@ -402,6 +423,16 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
             this.apiService.getInstance().nodes.getNodeInfo(this.nodeId, { include: ['allowableOperations'] })
                 .then((data: MinimalNodeEntryEntity) => {
                     this.sidebarTemplateContext.node = data;
+                });
+        }
+    }
+
+    toggleLeftSidebar() {
+        this.showLeftSidebar = !this.showLeftSidebar;
+        if (this.showSidebar && this.nodeId) {
+            this.apiService.getInstance().nodes.getNodeInfo(this.nodeId, { include: ['allowableOperations'] })
+                .then((data: MinimalNodeEntryEntity) => {
+                    this.sidebarLeftTemplateContext.node = data;
                 });
         }
     }
@@ -584,6 +615,10 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
         if (this.allowPrint) {
             const args = new BaseEvent();
             this.print.next(args);
+
+            if (!args.defaultPrevented) {
+                this.viewUtils.printFileGeneric(this.nodeId, this.mimeType);
+            }
         }
     }
 
@@ -711,10 +746,6 @@ export class ViewerComponent implements OnChanges, OnInit, OnDestroy {
                 }
             }, 1000);
         });
-    }
-
-    getSideBarStyle(): string {
-        return this.sidebarPosition === 'left' ? 'adf-viewer__sidebar__left' : 'adf-viewer__sidebar__right';
     }
 
     private generateCacheBusterNumber() {

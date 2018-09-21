@@ -1,24 +1,24 @@
 ---
 Added: v2.0.0
 Status: Active
-Last reviewed: 2018-08-07
+Last reviewed: 2018-09-13
 ---
 
 # Login component
 
 Authenticates to Alfresco Content Services and or Alfresco Process Services.
 
-![Login component](../docassets/images/custom-footer.png)
+![Login component](../docassets/images/login-extra-content.png)
 
 ## Contents
 
 -   [Basic usage](#basic-usage)
+    -   [Transclusions](#transclusions)
 -   [Class members](#class-members)
     -   [Properties](#properties)
     -   [Events](#events)
 -   [Details](#details)
     -   [Handling events](#handling-events)
-    -   [Changing content](#changing-content)
     -   [Custom logo and background](#custom-logo-and-background)
     -   [Customizing validation rules](#customizing-validation-rules)
     -   [Call an external identity provider to fetch the auth token](#call-an-external-identity-provider-to-fetch-the-auth-token)
@@ -34,6 +34,41 @@ Authenticates to Alfresco Content Services and or Alfresco Process Services.
 </adf-login>
 ```
 
+### [Transclusions](../user-guide/transclusion.md)
+
+You can replace the content of the header and footer of the [Login component](../core/login.component.md) with your own custom content:
+
+```html
+<adf-login ...>
+    <login-header><ng-template>My custom HTML for the header</ng-template></login-header>
+    <login-footer><ng-template>My custom HTML for the footer</ng-template></login-footer>
+</adf-login>`
+```
+
+Header:
+
+![Login with custom header](../docassets/images/custom-header.png)
+
+Footer:
+
+![Login with custom footer](../docassets/images/custom-footer.png)
+
+Also, any content that you put inside the `<adf-login>` tags will be rendered as part
+of the Login dialog:
+
+```html
+<adf-login ...>
+    <div>
+        <div><!-- Custom content goes here --></div>
+    </div>
+</adf-login>
+```
+
+This is useful if you need to extend the functionality of the dialog
+with custom input fields handled by your application or parent component:
+
+![Login with custom content](../docassets/images/login-extra-content.png)
+
 ## Class members
 
 ### Properties
@@ -42,11 +77,11 @@ Authenticates to Alfresco Content Services and or Alfresco Process Services.
 | ---- | ---- | ------------- | ----------- |
 | backgroundImageUrl | `string` |  | Path to a custom background image. |
 | copyrightText | `string` |  | The copyright text below the login box. |
-| disableCsrf | `boolean` |  | Prevents the CSRF Token from being submitted. Only valid for Alfresco Process Services. |
+| disableCsrf | `boolean` |  | (**Deprecated:** 3.0.0) Prevents the CSRF Token from being submitted. Only valid for Alfresco Process Services. |
 | fieldsValidation | `any` |  | Custom validation rules for the login form. |
 | logoImageUrl | `string` |  | Path to a custom logo image. |
 | needHelpLink | `string` | "" | Sets the URL of the NEED HELP link in the footer. |
-| providers | `string` |  | (**Deprecated:** 3.0.0 Possible valid values are ECM, BPM or ALL. deprecated in 3.0.0 use the providers property in the the app.config.json) |
+| providers | `string` |  | (**Deprecated:** 3.0.0 - use the providers property in the the app.config.json) Possible valid values are ECM, BPM or ALL. |
 | registerLink | `string` | "" | Sets the URL of the REGISTER link in the footer. |
 | showLoginActions | `boolean` | true | Should the extra actions (`Need Help`, `Register`, etc) be shown? |
 | showRememberMe | `boolean` | true | Should the `Remember me` checkbox be shown? When selected, this option will remember the logged-in user after the browser is closed to avoid logging in repeatedly. |
@@ -87,43 +122,6 @@ export class AppComponent {
     }
 }
 ```
-
-### Changing content
-
-You can replace the content of the header and footer of the [Login component](../core/login.component.md) with
-your own custom content, as shown in the examples below:
-
-```html
-<adf-login ...>
-    <login-footer><ng-template>My custom HTML for the footer</ng-template></login-footer>
-</adf-login>`
-```
-
-![Login with custom footer](../docassets/images/custom-footer.png)
-
-```html
-<adf-login ...>
-    <login-header><ng-template>My custom HTML for the header</ng-template></login-header>
-</adf-login>`
-```
-
-![Login with custom header](../docassets/images/custom-header.png)
-
-Also, any content that you put inside the &lt;adf-login> tags will be rendered as part
-of the Login dialog:
-
-```html
-<adf-login ...>
-    <div>
-        <div>Your extra content</div>
-    </div>
-</adf-login>
-```
-
-This is useful if you need to extend the functionality of the dialog
-with custom input fields handled by your application or parent component:
-
-![Login with custom content](../docassets/images/login-extra-content.png)
 
 ### Custom logo and background
 

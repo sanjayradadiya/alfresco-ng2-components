@@ -1,6 +1,7 @@
 ---
 Added: v2.1.0
 Status: Active
+Last reviewed: 2018-09-14
 ---
 
 # Sidebar action menu component
@@ -11,6 +12,15 @@ Displays a sidebar-action menu information panel.
 ![Sidebar action menu icon screenshot](../docassets/images/sidebar-action-menu-icon.png)
 
 ## Basic usage
+
+### [Transclusions](../user-guide/transclusion.md)
+
+There are three regions where you can add your own content in `<div>` elements with
+the following names:
+
+-   sidebar-menu-title-icon
+-   sidebar-menu-options
+-   sidebar-menu-expand-icon
 
 ```html
 <adf-sidebar-action-menu>
@@ -35,12 +45,8 @@ Displays a sidebar-action menu information panel.
 | ---- | ---- | ------------- | ----------- |
 | expanded | `boolean` |  | Toggle the sidebar action menu on expand. |
 | title | `string` |  | The title of the sidebar action. |
-| width | `number` | 272 | Width in pixels for sidebar action menu options |
+| width | `number` | 272 | Width in pixels for sidebar action menu options. |
 
 ## Details
 
-As the name suggests, this is basically just a layout with CSS styling. There are three regions where you can add your own content, as shown in the example:
-
--   sidebar-menu-title-icon
--   sidebar-menu-options
--   sidebar-menu-expand-icon
+As the name suggests, this is basically just a layout with CSS styling. 

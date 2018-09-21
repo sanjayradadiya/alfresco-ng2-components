@@ -17,20 +17,23 @@
 
 import { Component, ViewEncapsulation } from '@angular/core';
 import { DataTableCellComponent } from './datatable-cell.component';
-import { UserPreferencesService, UserPreferenceValues } from '../../../services/user-preferences.service';
+import {
+    UserPreferencesService,
+    UserPreferenceValues
+} from '../../../services/user-preferences.service';
 
 @Component({
     selector: 'adf-date-cell',
 
     template: `
         <ng-container>
-            <span title="{{ tooltip | date:'medium' }}" *ngIf="column?.format === 'timeAgo' else standard_date">
+            <span title="{{ tooltip | date:'medium' }}" *ngIf="format === 'timeAgo' else standard_date">
                 {{ value | adfTimeAgo: currentLocale }}
             </span>
         </ng-container>
         <ng-template #standard_date>
-            <span title="{{ tooltip | date:'medium' }}">
-                {{ value | date:'medium' }}
+            <span title="{{ tooltip | date:format }}">
+                {{ value | date:format }}
             </span>
         </ng-template>
     `,
@@ -38,15 +41,24 @@ import { UserPreferencesService, UserPreferenceValues } from '../../../services/
     host: { class: 'adf-date-cell' }
 })
 export class DateCellComponent extends DataTableCellComponent {
-
     currentLocale;
+
+    get format(): string {
+        if (this.column) {
+            return this.column.format || 'medium';
+        }
+        return 'medium';
+    }
 
     constructor(userPreferenceService: UserPreferencesService) {
         super();
 
-        userPreferenceService.select(UserPreferenceValues.Locale).subscribe((locale) => {
-            this.currentLocale = locale;
-         });
+        if (userPreferenceService) {
+            userPreferenceService
+                .select(UserPreferenceValues.Locale)
+                .subscribe(locale => {
+                    this.currentLocale = locale;
+                });
+        }
     }
-
 }

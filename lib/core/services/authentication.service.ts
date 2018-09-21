@@ -16,7 +16,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Observable, Subject, from, throwError } from 'rxjs';
+import { Observable, Subject, from, throwError, Observer } from 'rxjs';
 import { AlfrescoApiService } from './alfresco-api.service';
 import { CookieService } from './cookie.service';
 import { LogService } from './log.service';
@@ -24,6 +24,7 @@ import { RedirectionModel } from '../models/redirection.model';
 import { AppConfigService, AppConfigValues } from '../app-config/app-config.service';
 import { UserRepresentation } from 'alfresco-js-api';
 import { map, catchError, tap } from 'rxjs/operators';
+import { HttpHeaders } from '@angular/common/http';
 
 const REMEMBER_ME_COOKIE_KEY = 'ALFRESCO_REMEMBER_ME';
 const REMEMBER_ME_UNTIL = 1000 * 60 * 60 * 24 * 30 ;
@@ -31,6 +32,8 @@ const REMEMBER_ME_UNTIL = 1000 * 60 * 60 * 24 * 30 ;
 @Injectable()
 export class AuthenticationService {
     private redirectUrl: RedirectionModel = null;
+
+    private bearerExcludedUrls: string[] = ['auth/realms', 'resources/', 'assets/'];
 
     onLogin: Subject<any> = new Subject<any>();
     onLogout: Subject<any> = new Subject<any>();
@@ -53,18 +56,34 @@ export class AuthenticationService {
             return this.alfrescoApi.getInstance().isLoggedIn();
     }
 
+    /**
+     * Does the provider support OAuth?
+     * @returns True if supported, false otherwise
+     */
     isOauth(): boolean {
         return this.alfrescoApi.getInstance().isOauthConfiguration();
     }
 
+    /**
+     * Does the provider support ECM?
+     * @returns True if supported, false otherwise
+     */
     isECMProvider(): boolean {
         return this.alfrescoApi.getInstance().isEcmConfiguration();
     }
 
+    /**
+     * Does the provider support BPM?
+     * @returns True if supported, false otherwise
+     */
     isBPMProvider(): boolean {
         return this.alfrescoApi.getInstance().isBpmConfiguration();
     }
 
+    /**
+     * Does the provider support both ECM and BPM?
+     * @returns True if both are supported, false otherwise
+     */
     isALLProvider(): boolean {
         return this.alfrescoApi.getInstance().isEcmBpmConfiguration();
     }
@@ -137,9 +156,6 @@ export class AuthenticationService {
             );
     }
 
-    /**
-     *
-     */
     private callApiLogout(): Promise<any> {
         if (this.alfrescoApi.getInstance()) {
             return this.alfrescoApi.getInstance().logout();
@@ -233,6 +249,10 @@ export class AuthenticationService {
         return this.hasValidRedirection(provider) ? this.redirectUrl.url : null;
     }
 
+    /**
+     * Gets information about the user currently logged into APS.
+     * @returns User information
+     */
     getBpmLoggedUser(): Observable<UserRepresentation> {
         return from(this.alfrescoApi.getInstance().activiti.profileApi.getProfile());
     }
@@ -253,5 +273,30 @@ export class AuthenticationService {
     handleError(error: any): Observable<any> {
         this.logService.error('Error when logging in', error);
         return throwError(error || 'Server error');
+    }
+
+    getBearerExcludedUrls(): string[] {
+        return this.bearerExcludedUrls;
+    }
+
+    getToken(): string {
+        return localStorage.getItem('access_token');
+    }
+
+    addTokenToHeader(headersArg?: HttpHeaders): Observable<HttpHeaders> {
+        return Observable.create(async (observer: Observer<any>) => {
+            let headers = headersArg;
+            if (!headers) {
+                headers = new HttpHeaders();
+            }
+            try {
+                const token: string = this.getToken();
+                headers = headers.set('Authorization', 'bearer ' + token);
+                observer.next(headers);
+                observer.complete();
+            } catch (error) {
+                observer.error(error);
+            }
+        });
     }
 }

@@ -7,6 +7,7 @@ eval VERSION=""
 eval projects=( "adf-core"
     "adf-insights"
     "adf-content-services"
+    "adf-extensions"
     "adf-process-services" )
 
 show_help() {
@@ -105,8 +106,12 @@ do
  fi
 
   if [ ! -f package/_theming.scss ]; then
-    error_out '31;1' "$PACKAGE style not found!" >&2
-    exit 1
+    if [ $PACKAGE == 'adf-extensions' ]; then
+       echo "no style needed"
+    else
+       error_out '31;1' "$PACKAGE style not found!" >&2
+       exit 1
+    fi
  else
      echo "style ok!"
  fi
@@ -119,8 +124,12 @@ do
  fi
 
  if [ ! -f package/bundles/assets/$PACKAGE/i18n/en.json ]; then
-    error_out '31;1' "$PACKAGE i18n not found!" >&2
-    exit 1
+     if [ $PACKAGE == 'adf-extensions' ]; then
+       echo "no i18n needed"
+    else
+        error_out '31;1' "$PACKAGE i18n not found!" >&2
+        exit 1
+    fi
  else
      echo "i18n ok!"
  fi

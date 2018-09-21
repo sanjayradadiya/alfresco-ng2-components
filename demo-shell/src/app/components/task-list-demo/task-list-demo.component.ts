@@ -22,38 +22,30 @@ import { debounceTime } from 'rxjs/operators';
 
 @Component({
     templateUrl: './task-list-demo.component.html',
-    styleUrls: [`./task-list-demo.component.scss`],
+    styleUrls: [`./task-list-demo.component.scss`]
 })
 
 export class TaskListDemoComponent implements OnInit {
-
-    defaultAppId: number;
+    DEFAULT_SIZE = 20;
 
     taskListForm: FormGroup;
 
     errorMessage: string;
 
     appId: number;
-
+    defaultAppId: number;
     id: string;
-
     processDefinitionId: string;
-
     processInstanceId: string;
-
     state: string;
-
     assignment: string;
-
     name: string;
-
     sort: string;
-
     start: number;
-
-    size: number;
-
-    page: number;
+    size: number = this.DEFAULT_SIZE;
+    page: number = 0;
+    dueAfter: string;
+    dueBefore: string;
 
     includeProcessInstance: boolean;
 
@@ -111,6 +103,8 @@ export class TaskListDemoComponent implements OnInit {
             taskSort: new FormControl(''),
             taskSize: new FormControl(''),
             taskPage: new FormControl(''),
+            taskDueAfter: new FormControl(''),
+            taskDueBefore: new FormControl(''),
             taskStart: new FormControl('', [Validators.pattern('^[0-9]*$')]),
             taskIncludeProcessInstance: new FormControl('')
         });
@@ -123,7 +117,7 @@ export class TaskListDemoComponent implements OnInit {
                 if (this.isFormValid()) {
                     this.filterTasks(taskFilter);
                 }
-        });
+            });
     }
 
     filterTasks(taskFilter: any) {
@@ -136,8 +130,15 @@ export class TaskListDemoComponent implements OnInit {
         this.state = taskFilter.taskState;
         this.sort = taskFilter.taskSort;
         this.start = taskFilter.taskStart;
-        this.size = taskFilter.taskSize;
-        this.page = taskFilter.taskPage;
+        this.size = +taskFilter.taskSize;
+
+        if (taskFilter.page > 0) {
+            this.page = +taskFilter.taskPage - 1;
+        } else {
+            this.page = +taskFilter.taskPage;
+        }
+        this.dueAfter = taskFilter.taskDueAfter;
+        this.dueBefore = taskFilter.taskDueBefore;
 
         this.includeProcessInstance = taskFilter.taskIncludeProcessInstance === 'include';
     }
@@ -157,8 +158,10 @@ export class TaskListDemoComponent implements OnInit {
         this.state = null;
         this.sort = null;
         this.start = null;
-        this.size = null;
+        this.size = this.DEFAULT_SIZE;
         this.page = null;
+        this.dueAfter = null;
+        this.dueBefore = null;
     }
 
     isFormValid() {
@@ -211,5 +214,13 @@ export class TaskListDemoComponent implements OnInit {
 
     get taskPage(): AbstractControl {
         return this.taskListForm.get('taskPage');
+    }
+
+    get taskDueAfter(): AbstractControl {
+        return this.taskListForm.get('taskDueAfter');
+    }
+
+    get taskDueBefore(): AbstractControl {
+        return this.taskListForm.get('taskDueBefore');
     }
 }

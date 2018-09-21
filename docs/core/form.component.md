@@ -13,12 +13,12 @@ Shows a [`Form`](../../lib/process-services/task-list/models/form.model.ts) from
 ## Contents
 
 -   [Basic Usage](#basic-usage)
+    -   [Transclusions](#transclusions)
 -   [Class members](#class-members)
     -   [Properties](#properties)
     -   [Events](#events)
 -   [Details](#details)
     -   [Displaying a form](#displaying-a-form)
-    -   [Custom empty form template](#custom-empty-form-template)
     -   [Controlling outcome execution behaviour](#controlling-outcome-execution-behaviour)
     -   [Field Validators](#field-validators)
     -   [Common scenarios](#common-scenarios)
@@ -29,6 +29,20 @@ Shows a [`Form`](../../lib/process-services/task-list/models/form.model.ts) from
 ```html
 <adf-form 
     [taskId]="taskId">
+</adf-form>
+```
+
+### [Transclusions](../user-guide/transclusion.md)
+
+Any content in the body of `<adf-form>` will be shown when no form definition is found:
+
+```html
+<adf-form .... >
+
+    <div empty-form >
+        <h2>Empty form</h2>
+    </div>
+
 </adf-form>
 ```
 
@@ -66,6 +80,7 @@ Shows a [`Form`](../../lib/process-services/task-list/models/form.model.ts) from
 | formCompleted | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<`[`FormModel`](../../lib/core/form/components/widgets/core/form.model.ts)`>` | Emitted when the form is submitted with the `Complete` outcome. |
 | formContentClicked | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<`[`ContentLinkModel`](../../lib/core/form/components/widgets/core/content-link.model.ts)`>` | Emitted when form content is clicked. |
 | formDataRefreshed | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<`[`FormModel`](../../lib/core/form/components/widgets/core/form.model.ts)`>` | Emitted when form values are refreshed due to a data property change. |
+| formError | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<`[`FormFieldModel`](../core/form-field.model.md)`[]>` | Emitted when form validations has validation error. |
 | formLoaded | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<`[`FormModel`](../../lib/core/form/components/widgets/core/form.model.ts)`>` | Emitted when the form is loaded or reloaded. |
 | formSaved | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<`[`FormModel`](../../lib/core/form/components/widgets/core/form.model.ts)`>` | Emitted when the form is submitted with the `Save` or custom outcomes. |
 | onError | [`EventEmitter`](https://angular.io/api/core/EventEmitter)`<any>` | Emitted when any error occurs. |
@@ -163,20 +178,6 @@ The `nameNode` parameter is optional.
 
 Here, the node metadata is shown in an APS [Form,](../../lib/process-services/task-list/models/form.model.ts)
 with the form fields themselves saved as metadata. The `nameNode` parameter is optional.
-
-### Custom empty form template
-
-You can add a template that will be shown when no form definition is found:
-
-```html
-<adf-form .... >
-
-    <div empty-form >
-        <h2>Empty form</h2>
-    </div>
-
-</adf-form>
-```
 
 ### Controlling outcome execution behaviour
 

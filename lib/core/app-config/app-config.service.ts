@@ -94,6 +94,7 @@ export class AppConfigService {
 
     /**
      * Gets the location.protocol value.
+     * @returns The location.protocol string
      */
     getLocationProtocol(): string {
         return location.protocol;
@@ -122,7 +123,9 @@ export class AppConfigService {
      */
     load(): Promise<any> {
         return new Promise(resolve => {
-            this.http.get('app.config.json').subscribe(
+            const configUrl = `app.config.json?v=${Date.now()}`;
+
+            this.http.get(configUrl).subscribe(
                 (data: any) => {
                     this.config = Object.assign({}, this.config, data || {});
                     this.onLoadSubject.next(this.config);
