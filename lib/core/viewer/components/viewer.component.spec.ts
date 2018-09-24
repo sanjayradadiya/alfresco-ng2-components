@@ -142,7 +142,7 @@ xdescribe('ViewerComponent', () => {
             {
                 provide: RenditionsService, useValue: {
                     getRendition: () => {
-                        return throwError('throwed');
+                        return throwError('thrown');
                     }
                 }
             },
