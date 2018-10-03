@@ -72,6 +72,20 @@ exports.config = {
         }
     },
 
+
+
+     /* 'capabilities': {
+        'os': 'Windows',
+        'os_version': '10',
+        'browserName': 'IE',
+        'browserstack.local' : 'false',
+        'browserstack.selenium_version' : '3.5.2',
+        'browserstack.user' : 'jenny.dosti@alfresco.com', // 'cristinajalba1',
+        'browserstack.key' : 'XbfpqzqxssF6QxjxYwKy', // 'YbuK5DBqYrWZv1BQANzo',
+        'resolution': '1366x768'
+     }, */
+
+
     directConnect: DIRECT_CONNECCT,
 
     baseUrl: "http://" + HOST,
@@ -90,8 +104,9 @@ exports.config = {
      * @config {String} seleniumAddress
      */
     seleniumAddress: SELENIUM_SERVER,
+    // seleniumAddress: 'http://hub-cloud.browserstack.com/wd/hub',
 
-    plugins: [{
+     plugins: [{
         package: 'jasmine2-protractor-utils',
         disableHTMLReport: false,
         disableScreenshot: false,
@@ -102,12 +117,26 @@ exports.config = {
         screenshotPath: `${projectRoot}/e2e-output/screenshots/`
     }],
 
+
+
     onCleanUp(results) {
         retry.onCleanUp(results);
     },
 
     onPrepare() {
         retry.onPrepare();
+
+        /* jasmine.getEnv().addReporter(new screenshotsReporter({
+                savePath: `${projectRoot}/e2e-output`,
+                screenshotsFolder: "screenshots",
+                takeScreenshotsOnlyOnFailures: true,
+                takeScreenshots: true,
+                filePrefix: 'index',
+                fixedScreenshotName: true,
+                cleanDestination: false
+            })
+        );*/
+
 
         require('ts-node').register({
             project: 'e2e/tsconfig.e2e.json'

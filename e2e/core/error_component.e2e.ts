@@ -38,6 +38,8 @@ describe('Error Component', () => {
 
         await this.alfrescoJsApi.core.peopleApi.addPerson(acsUser);
 
+        console.log("User: ", acsUser);
+
         loginPage.loginToContentServicesUsingUserModel(acsUser);
 
         done();
