@@ -362,7 +362,7 @@ describe('Document List Component', () => {
         done();
     });
 
-    it('[C268119] "ygj" letters should be rendered properly', async (done) => {
+    it('[C268119] - ygj letters rendering in document list', async (done) => {
         acsUser = new AcsUserModel();
         let folderName = 'ggggggjjjjjjjjjjjjyyyyyy';
         await this.alfrescoJsApi.login(TestConfig.adf.adminEmail, TestConfig.adf.adminPassword);
