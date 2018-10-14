@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-export interface HightlightTransformResult {
+export interface HighlightTransformResult {
     text: string;
     changed: boolean;
 }
@@ -29,7 +29,7 @@ export class HighlightTransformService {
      * @param wrapperClass CSS class used to provide highlighting style
      * @returns New text along with boolean value to indicate whether anything was highlighted
      */
-    public highlight(text: string, search: string, wrapperClass: string = 'highlight'): HightlightTransformResult {
+    public highlight(text: string, search: string, wrapperClass: string = 'highlight'): HighlightTransformResult {
         let isMatching = false,
             result = text;
 
