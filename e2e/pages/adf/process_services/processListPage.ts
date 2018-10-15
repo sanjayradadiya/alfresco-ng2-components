@@ -39,7 +39,7 @@ export class ProcessListPage {
         return this.processListTitle.getText();
     }
 
-    checkProcessDetailsMessagee() {
+    checkProcessDetailsMessage() {
         Util.waitUntilElementIsVisible(this.processListTitle);
         return this.processDetailsMessage.getText();
     }
