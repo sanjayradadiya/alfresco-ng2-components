@@ -16,6 +16,7 @@
  */
 
 import Util = require('../../../util/util');
+import { by, element } from 'protractor';
 
 export class AppNavigationBarPage {
 

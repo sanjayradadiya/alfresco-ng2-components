@@ -39,10 +39,11 @@ export class TaskDetailsPage {
     addInvolvedUserButton = element(by.css('button[id="add-people"] span'));
     emailInvolvedUser = by.xpath('following-sibling::div[@class="people-email ng-star-inserted"]');
     editActionInvolvedUser = by.xpath('following-sibling::div[@class="people-edit-label ng-star-inserted"]');
-    tadkDetailsInfoDrawer = element(by.tagName('adf-info-drawer'));
+    taskDetailsInfoDrawer = element(by.tagName('adf-info-drawer'));
     taskDetailsSection = element(by.css('div[data-automation-id="adf-tasks-details"]'));
     taskDetailsEmptySection = element(by.css('div[data-automation-id="adf-tasks-details--empty"]'));
     completeTask = element(by.css('button[id="adf-no-form-complete-button"]'));
+    completeFormTask = element(by.css('button[id="adf-form-complete"]'));
     taskDetailsTitle = element(by.css('h2[class="activiti-task-details__header"] span'));
     auditLogButton = element(by.css('button[adf-task-audit]'));
     noPeopleInvolved = element(by.id('no-people-label'));
@@ -236,7 +237,6 @@ export class TaskDetailsPage {
 
     checkUserIsSelected(user) {
         let row = element(by.cssContainingText('div[class*="search-list-container"] div[class*="people-full-name"]', user));
-        let selectedRow = this.getRowsUser(user).element(by.css('ancestor::tr[class*="is-selected"]'));
         Util.waitUntilElementIsVisible(row);
         return this;
     }
@@ -284,11 +284,11 @@ export class TaskDetailsPage {
     }
 
     taskInfoDrawerIsDisplayed() {
-        Util.waitUntilElementIsVisible(this.tadkDetailsInfoDrawer);
+        Util.waitUntilElementIsVisible(this.taskDetailsInfoDrawer);
     }
 
     taskInfoDrawerIsNotDisplayed() {
-        Util.waitUntilElementIsNotOnPage(this.tadkDetailsInfoDrawer);
+        Util.waitUntilElementIsNotOnPage(this.taskDetailsInfoDrawer);
     }
 
     checkNoPeopleIsInvolved() {
@@ -363,6 +363,16 @@ export class TaskDetailsPage {
     clickCompleteTask() {
         Util.waitUntilElementIsVisible(this.completeTask);
         return this.completeTask.click();
+    }
+
+    checkCompleteFormButtonIsDisplayed() {
+        Util.waitUntilElementIsVisible(this.completeFormTask);
+        return this.completeFormTask;
+    }
+
+    clickCompleteFormTask() {
+        Util.waitUntilElementIsClickable(this.completeFormTask);
+        return this.completeFormTask.click();
     }
 
 }
