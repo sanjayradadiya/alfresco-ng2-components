@@ -147,7 +147,7 @@ describe('Modify applications', () => {
     });
 
     it('[C260207] Should the app be updated when is edited in APS', async () => {
-        var newDescription = "new description";
+        let newDescription = 'new description';
 
         navigationBarPage.clickProcessServicesButton();
         processServicesPage.checkApsContainer();
@@ -156,9 +156,9 @@ describe('Modify applications', () => {
         expect(processServicesPage.getBackgroundColor(appTobeDeleted.title)).toEqual(CONSTANTS.APP_COLOR.ORANGE);
         expect(processServicesPage.getDescription(appTobeDeleted.title)).toEqual(appTobeDeleted.description);
 
-        let appDefinition = {"appDefinition":{"id":appVersionToBeDeleted.id,"name":appTobeDeleted.title,
-            "description":newDescription,"definition":{"models": [firstApp.definition.models[0]], "theme":"theme-4",
-                "icon":"glyphicon-user"}},  "publish":true};
+        let appDefinition = {'appDefinition': {'id': appVersionToBeDeleted.id, 'name': appTobeDeleted.title,
+            'description': newDescription, 'definition': {'models': [firstApp.definition.models[0]], 'theme': 'theme-4',
+                'icon': 'glyphicon-user'}}, 'publish': true};
 
         browser.controlFlow().execute(async () => {
             await this.alfrescoJsApi.activiti.appsApi.updateAppDefinition(appVersionToBeDeleted.id, appDefinition);
@@ -170,6 +170,5 @@ describe('Modify applications', () => {
         expect(processServicesPage.getBackgroundColor(appTobeDeleted.title)).toEqual(CONSTANTS.APP_COLOR.RED);
         expect(processServicesPage.getAppIconType(appTobeDeleted.title)).toEqual(CONSTANTS.APP_ICON.USER);
     });
-
 
 });
